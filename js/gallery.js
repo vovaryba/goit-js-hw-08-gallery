@@ -2,13 +2,19 @@ import images from './gallery-items.js';
 
 const imagesContainer = document.querySelector('.js-gallery');
 const lightbox = document.querySelector('.js-lightbox');
-const closeLightbox = document.querySelector('.lightbox__button');
+const backdrop = document.querySelector('.lightbox__overlay');
+const lightboxImage = document.querySelector('.lightbox__image');
+const closeLightboxButton = document.querySelector('.lightbox__button');
 const galleryMarkup = createGalleryMarkup(images);
 
 imagesContainer.insertAdjacentHTML('beforeend', galleryMarkup);
 
 imagesContainer.addEventListener('click', onImagesContainerClick);
-closeLightbox.addEventListener('click', onCloseLightboxButtonClick);
+
+const imageLinks = document.querySelectorAll('.gallery__link');
+imageLinks.forEach(link => {
+	link.addEventListener('click', onImageLinkClick, false);
+});
 
 function createGalleryMarkup(images) {
 	return images.map(({ preview, original, description }) => {
@@ -34,12 +40,36 @@ function onImagesContainerClick(evt) {
 	if (evt.target.nodeName !== 'IMG') {
 		return;
 	}
-
+	closeLightboxButton.addEventListener('click', onCloseLightboxButtonClick);
+	backdrop.addEventListener('click', onBackdropClick);
+	window.addEventListener('keydown', onEscKeyPress);
 	lightbox.classList.add('is-open');
-	
-	// console.log(evt.target.dataset.source);
+	lightboxImage.setAttribute('src', `${evt.target.dataset.source}`);
+	lightboxImage.setAttribute('alt', `${evt.target.alt}`);
 }
 
-function onCloseLightboxButtonClick () {
+function onCloseLightboxButtonClick() {
+	closeLightboxButton.removeEventListener('click', onCloseLightboxButtonClick);
+	window.removeEventListener('keydown', onEscKeyPress);
 	lightbox.classList.remove('is-open');
+	lightboxImage.setAttribute('src', '');
+	lightboxImage.setAttribute('alt', '');
+}
+
+function onImageLinkClick(evt) {
+	evt.preventDefault();
+}
+
+function onBackdropClick(evt) {
+	if (evt.currentTarget === evt.target) {
+		backdrop.removeEventListener('click', onBackdropClick);
+		onCloseLightboxButtonClick();
+	}
+}
+
+function onEscKeyPress(evt) {
+	if (evt.code === 'Escape') {
+		window.removeEventListener('keydown', onEscKeyPress);
+		onCloseLightboxButtonClick();
+	}
 }
