@@ -41,8 +41,8 @@ function onImagesContainerClick(evt) {
 	backdrop.addEventListener('click', onBackdropClick);
 	window.addEventListener('keydown', onEscKeyPress);
 	lightbox.classList.add('is-open');
-	lightboxImage.setAttribute('src', `${evt.target.dataset.source}`);
-	lightboxImage.setAttribute('alt', `${evt.target.alt}`);
+	lightboxImage.src = evt.target.dataset.source;
+	lightboxImage.alt = evt.target.alt;
 }
 
 function onCloseLightboxButtonClick() {
@@ -50,8 +50,8 @@ function onCloseLightboxButtonClick() {
 	backdrop.removeEventListener('click', onBackdropClick);
 	window.removeEventListener('keydown', onEscKeyPress);
 	lightbox.classList.remove('is-open');
-	lightboxImage.setAttribute('src', '');
-	lightboxImage.setAttribute('alt', '');
+	lightboxImage.src = '';
+	lightboxImage.alt = '';
 }
 
 function onBackdropClick(evt) {
